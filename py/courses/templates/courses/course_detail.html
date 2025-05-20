@@ -1,0 +1,57 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}{{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>{{ course.title }}</h1>
+        <p class="lead">{{ course.description }}</p>
+        
+        {% if progress %}
+        <div class="progress mb-4">
+            <div class="progress-bar" role="progressbar" 
+                 style="width: {{ progress.progress_percentage }}%"
+                 aria-valuenow="{{ progress.progress_percentage }}" 
+                 aria-valuemin="0" 
+                 aria-valuemax="100">
+                {{ progress.progress_percentage|floatformat:1 }}%
+            </div>
+        </div>
+        {% endif %}
+
+        <h2 class="mb-3">Lessons</h2>
+        <div class="list-group">
+            {% for lesson in lessons %}
+            <a href="{% url 'courses:lesson_detail' course.id lesson.id %}" 
+               class="list-group-item list-group-item-action {% if lesson in completed_lessons %}list-group-item-success{% endif %}">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ lesson.title }}</h5>
+                    {% if lesson in completed_lessons %}
+                    <small class="text-success">✓ Completed</small>
+                    {% endif %}
+                </div>
+                <small class="text-muted">Lesson {{ lesson.order }}</small>
+            </a>
+            {% empty %}
+            <div class="alert alert-info">
+                No lessons available for this course yet.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Course Information</h5>
+                <p class="card-text">
+                    <strong>Language:</strong> {{ course.language }}<br>
+                    <strong>Created:</strong> {{ course.created_at|date:"F j, Y" }}<br>
+                    <strong>Last Updated:</strong> {{ course.updated_at|date:"F j, Y" }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
